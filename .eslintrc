@@ -1,16 +1,19 @@
 {
     "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-        "@typescript-eslint",
-        "@typescript-eslint/eslint-plugin"
-    ],
+    "parser": "",
+    "plugins": [],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "env": {
+        "es6": true,
+        "node": true
+    },
     "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "eslint:recommended"
     ],
     "rules": {
-        "semi": "error"
+        "semi": "error",
+        "quotes": [2, "single", { "avoidEscape": true }]
     }
 }
