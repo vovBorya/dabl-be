@@ -14,6 +14,12 @@ const Passwords = db.passwords;
 const signIn = async (req, res) => {
     const { login, password } = req.body;
 
+    if (!(login && password)) {
+        res.send(400);
+
+        return;
+    }
+
     const user = await Users.findOne({
         where: {
             [Op.or]: {

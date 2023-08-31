@@ -8,7 +8,14 @@ const trimBearerFromToken = (token = '') => {
     return token.replace('Bearer ', '');
 };
 
+const onUnauthorizedRequest = (res) => {
+    res.status(401).send({
+        message: 'Unauthorized'
+    });
+};
+
 module.exports = {
     sendInternalError,
-    trimBearerFromToken
+    trimBearerFromToken,
+    onUnauthorizedRequest
 };

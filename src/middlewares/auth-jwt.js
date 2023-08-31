@@ -4,8 +4,6 @@ const { trimBearerFromToken} = require('../helpers');
 const verifyToken = (req, res, next) => {
     const token = trimBearerFromToken(req.headers['authorization']);
 
-    console.log({token});
-
     if (!token) {
         return res.status(403).send({
             message: 'No token provided!'
@@ -25,8 +23,13 @@ const verifyToken = (req, res, next) => {
     });
 };
 
+const getTokenFromReq = (req) => {
+    return trimBearerFromToken(req.headers['authorization']);
+};
+
 const authJwt = {
     verifyToken,
+    getTokenFromReq,
 };
 
 module.exports = authJwt;
