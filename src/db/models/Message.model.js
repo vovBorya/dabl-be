@@ -7,7 +7,7 @@ module.exports = sequelize => sequelize.define('Message', {
         allowNull: false,
         primaryKey: true
     },
-    content: {
+    text: {
         type: Sequelize.STRING,
         allowNull: false
     },

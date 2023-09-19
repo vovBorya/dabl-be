@@ -22,4 +22,19 @@ db.chats = require('./models/Chat.model')(sequelize);
 db.chatParticipants = require('./models/ChatParticipants.model')(sequelize);
 db.messages = require('./models/Message.model')(sequelize);
 
+db.chats.hasMany(db.messages, {
+    foreignKey: 'chatId'
+});
+db.messages.belongsTo(db.chats);
+
+db.chats.hasMany(db.chatParticipants, {
+    foreignKey: 'chatId'
+});
+db.chatParticipants.belongsTo(db.chats);
+
+db.users.hasMany(db.chatParticipants, {
+    foreignKey: 'userId'
+});
+db.chatParticipants.belongsTo(db.users);
+
 module.exports = db;

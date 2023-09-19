@@ -53,6 +53,57 @@ const createChat = async (req, res) => {
     }
 };
 
+const getChats = async (req, res) => {
+    const chatParticipants = await ChatParticipants.findAll({
+        attributes: ['chatId', 'userId'],
+        raw: true,
+        where: {
+            userId: req.userId
+        }
+    });
+
+    const chats = await Chats.findAll({
+        raw: true,
+        where: {
+            [Op.or]: chatParticipants.map(chatParticipant => {
+                return {
+                    id: chatParticipant.chatId
+                };
+            })
+        }
+    });
+
+    const resultChats = [];
+
+    for (const chat of chats) {
+        let chatName = chat.name;
+
+        if (!chatName) {
+            const chatParticipantNotMe = await ChatParticipants.findOne({
+                attributes: ['chatId', 'userId'],
+                raw: true,
+                where: {
+                    chatId: chat.id,
+                    userId: {
+                        [Op.not]: req.userId
+                    }
+                }
+            });
+
+            const user = await Users.findByPk(chatParticipantNotMe.userId, {raw: true});
+
+            chatName = user.nickName;
+        }
+
+        resultChats.push({
+            ...chat,
+            name: chatName
+        });
+    }
+
+    res.send(resultChats);
+};
+
 const getChat = async (req, res) => {
     const chatId = req.params.id;
 
@@ -124,6 +175,12 @@ module.exports = app => {
         '/api/chats',
         [verifyToken],
         createChat
+    );
+
+    app.get(
+        '/api/chats',
+        [verifyToken],
+        getChats
     );
 
     app.get(
