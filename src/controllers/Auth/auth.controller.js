@@ -61,18 +61,13 @@ const signIn = async (req, res) => {
 };
 
 const signUp = async (req, res) => {
-    console.log('req.body > ', req.body);
-    const nickName = req.body.nickName;
-    const { /*nickName, */firstName, lastName, email, password } = req.body;
-
-    console.log({nickName, firstName, lastName, email, password});
 
     try {
         const user = await Users.create(req.body);
 
         await Passwords.create({
             userId: user.id,
-            password: bcrypt.hashSync(password, 8)
+            password: bcrypt.hashSync(req.body.password, 8)
         });
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {

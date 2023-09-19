@@ -8,6 +8,7 @@ dotenv.config();
 const db = require('./db/db');
 const authController = require('./controllers/Auth/auth.controller');
 const userController = require('./controllers/User/user.controller');
+const chatController = require('./controllers/Chat/chat.controller');
 
 const app = express();
 const port = process.env.PORT;
@@ -27,6 +28,7 @@ app.use(function(req, res, next) {
 
 userController(app);
 authController(app);
+chatController(app);
 
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

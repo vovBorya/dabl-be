@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { trimBearerFromToken} = require('../helpers');
+const { trimBearerFromToken } = require('../helpers');
 
 const verifyToken = (req, res, next) => {
     const token = trimBearerFromToken(req.headers['authorization']);
@@ -11,8 +11,6 @@ const verifyToken = (req, res, next) => {
     }
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
-        console.log({err});
-        console.log({decoded});
         if (err) {
             return res.status(401).send({
                 message: 'Unauthorized!'
