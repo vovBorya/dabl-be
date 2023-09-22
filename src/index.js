@@ -7,7 +7,7 @@ const http = require('http');
 
 dotenv.config();
 
-const { initWebSocket } = require('./ws/init');
+const { initSSE } = require('./sse/init');
 
 const db = require('./db/db');
 const authController = require('./controllers/Auth/auth.controller');
@@ -36,12 +36,8 @@ chatController(app);
 
 const server = http.createServer(app);
 
-initWebSocket(server);
+initSSE(app);
 
 server.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
-
-// app.listen(port, () => {
-//     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-// });

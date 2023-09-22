@@ -19,6 +19,5 @@ module.exports = sequelize => sequelize.define('ChatParticipants', {
     }
 },{
     tableName: 'chat_participants',
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    underscored: true
 });

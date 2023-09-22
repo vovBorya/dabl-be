@@ -19,10 +19,9 @@ module.exports = sequelize => sequelize.define('Message', {
     chatId: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: 'chat_id',
+        field: 'chat_id'
     }
 },{
     tableName: 'messages',
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    underscored: true
 });

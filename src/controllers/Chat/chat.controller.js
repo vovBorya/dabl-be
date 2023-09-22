@@ -6,6 +6,7 @@ const {
 } = require('../../db/db');
 const {verifyToken} = require('../../middlewares/auth-jwt');
 const {sendInternalError} = require('../../helpers');
+const {sendMessageToChatParticipants} = require('../../sse/functions');
 const db = require('../../db/db');
 
 const Op = db.Sequelize.Op;
@@ -108,21 +109,25 @@ const getChat = async (req, res) => {
     const chatId = req.params.id;
 
     try {
-        const messages = await Messages.findAndCountAll({
+
+        const messages = await Messages.findAll({
             where: {
                 chatId
             },
             limit: 100,
             offset: 0,
             order: [
-                ['created_at', 'DESC']
+                ['created_at', 'ASC']
             ],
-            plain: true
+            // plain: true
         });
 
         const chatParticipants = await ChatParticipants.findAll({
             where: {
-                chatId
+                chatId,
+                userId: {
+                    [Op.not]: req.userId
+                }
             }
         });
 
@@ -151,7 +156,7 @@ const getChat = async (req, res) => {
         res.send({
             ...chat.dataValues,
             participants: users,
-            messages: messages.rows
+            messages: messages
         });
 
     } catch (e) {
@@ -160,6 +165,28 @@ const getChat = async (req, res) => {
             message: 'Ooops... '
         });
     }
+};
+
+const saveMessage = async (req, res) => {
+
+    const { text, authorId, chatId } = req.body;
+
+    const message = await Messages.create({
+        text,
+        authorId,
+        chatId,
+        raw: true
+    });
+
+    res.status(200).send(message);
+
+    return message.dataValues;
+};
+
+const onMessageSent = async (req, res) => {
+    const newMessage = await saveMessage(req, res);
+
+    await sendMessageToChatParticipants(req, res, newMessage);
 };
 
 module.exports = app => {
@@ -187,5 +214,11 @@ module.exports = app => {
         '/api/chats/:id',
         [verifyToken],
         getChat
+    );
+
+    app.post(
+        '/api/sendMessage',
+        [verifyToken],
+        onMessageSent
     );
 };

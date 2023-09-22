@@ -18,6 +18,5 @@ module.exports = sequelize => sequelize.define('Password', {
     }
 }, {
     tableName: 'passwords',
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    underscored: true
 });

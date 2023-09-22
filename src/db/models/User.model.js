@@ -27,6 +27,5 @@ module.exports = sequelize => sequelize.define('User', {
     }
 },{
     tableName: 'users',
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    underscored: true
 });
