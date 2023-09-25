@@ -26,6 +26,46 @@ const getUser = async (req, res) => {
     }
 };
 
+const updateUser = async (req, res) => {
+    const userId = req.userId;
+
+    const {
+        nickName,
+        firstName,
+        lastName,
+        email
+    } = req.body;
+
+    if (userId) {
+        try {
+            await Users.update({
+                nickName,
+                firstName,
+                lastName,
+                email
+            }, {
+                where: {
+                    id: userId
+                }
+            });
+
+            const user = await Users.findOne({
+                where: {
+                    id: userId
+                }
+            });
+
+            res.send(user);
+        } catch (err) {
+            res.status(500).send();
+        }
+    } else {
+        res.status(400).send({
+            message: 'No user id in token'
+        });
+    }
+};
+
 module.exports = app => {
     app.use(function(req, res, next) {
         res.header(
@@ -45,5 +85,11 @@ module.exports = app => {
         '/api/user',
         [verifyToken],
         getUser
+    );
+
+    app.put(
+        '/api/user',
+        [verifyToken],
+        updateUser
     );
 };
